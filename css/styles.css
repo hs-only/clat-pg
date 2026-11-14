@@ -1,0 +1,1503 @@
+/* ==========================================================================
+   CLAT PG Mock Portal & Authentic TCS iON / Consortium CBT Interface Styles
+   ========================================================================== */
+
+:root {
+  --primary: #1a365d;
+  --primary-mid: #2b4c7e;
+  --primary-light: #ebf4ff;
+  --accent: #0f766e;
+  --tcs-header: #224268;
+  --tcs-subheader: #366497;
+  --tcs-blue-btn: #0c7cd5;
+  --tcs-blue-btn-hover: #0960a5;
+  --tcs-answered: #2e8b22;
+  --tcs-not-answered: #d9381e;
+  --tcs-not-visited: #e9ecef;
+  --tcs-marked: #6b3fa0;
+  --tcs-ans-marked: #6b3fa0;
+  --bg-page: #f4f6f9;
+  --bg-card: #ffffff;
+  --border-color: #d1d5db;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --success: #15803d;
+  --danger: #b91c1c;
+  --warning: #b45309;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   1. DASHBOARD & PORTAL NAVIGATION
+   ========================================================================== */
+
+.portal-navbar {
+  background: linear-gradient(135deg, #162d4c 0%, #224268 100%);
+  color: #fff;
+  padding: 0.85rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-emblem {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #f59e0b;
+  color: #111827;
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.brand-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.brand-subtitle {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.nav-tab-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nav-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.nav-tab-btn.active {
+  background: #ffffff;
+  color: #162d4c;
+  border-color: #ffffff;
+}
+
+.candidate-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.84rem;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.candidate-pill:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.portal-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Dashboard Hero & Quick Stats */
+.hero-banner {
+  background: linear-gradient(120deg, #1e3a5f 0%, #0f766e 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+.hero-banner h1 {
+  font-size: 1.45rem;
+  margin-bottom: 0.35rem;
+}
+
+.hero-banner p {
+  font-size: 0.92rem;
+  color: #e2e8f0;
+  max-width: 720px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-top: 0.25rem;
+}
+
+.stat-sub {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+}
+
+/* Resume In-Progress Banner */
+.resume-banner {
+  background: #fffbeb;
+  border: 2px solid #f59e0b;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Filter Pills & Test Cards */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-pill.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.tests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.25rem;
+}
+
+.test-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.test-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.test-card-top {
+  margin-bottom: 1rem;
+}
+
+.badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.cat-badge {
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.22rem 0.65rem;
+  border-radius: 4px;
+  letter-spacing: 0.4px;
+}
+
+.cat-full {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.cat-pyq {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.cat-sec {
+  background: #ccfbf1;
+  color: #115e59;
+}
+
+.attempted-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+.test-card h3 {
+  font-size: 1.08rem;
+  color: #0f172a;
+  margin-bottom: 0.45rem;
+  line-height: 1.35;
+}
+
+.test-card p {
+  font-size: 0.86rem;
+  color: #475569;
+  margin-bottom: 0.85rem;
+}
+
+.test-meta-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: #334155;
+  background: #f8fafc;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.test-card-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+/* Generic Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.05rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #102a4c;
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-accent:hover {
+  background: #0d5f58;
+}
+
+.btn-outline {
+  background: #fff;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+.btn-outline:hover {
+  background: #f1f5f9;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 0.38rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   2. PRE-TEST OFFICIAL TCS iON INSTRUCTIONS SCREEN
+   ========================================================================== */
+
+.instructions-screen {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+}
+
+.inst-header {
+  background: var(--tcs-header);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.inst-body-wrap {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.inst-main {
+  flex: 1;
+  padding: 1.75rem 2.5rem;
+  overflow-y: auto;
+  font-size: 0.93rem;
+  color: #1f2937;
+}
+
+.inst-main h2 {
+  text-align: center;
+  margin-bottom: 1.25rem;
+  color: #111827;
+  font-size: 1.25rem;
+}
+
+.inst-main h3 {
+  margin: 1.25rem 0 0.6rem;
+  font-size: 1rem;
+  color: #1e3a5f;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.3rem;
+}
+
+.inst-main ol, .inst-main ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.inst-main li {
+  margin-bottom: 0.5rem;
+}
+
+.inst-legend-table {
+  width: 100%;
+  max-width: 720px;
+  border-collapse: collapse;
+  margin: 0.85rem 0 1.25rem;
+}
+
+.inst-legend-table td {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #d1d5db;
+  vertical-align: middle;
+}
+
+.inst-side-profile {
+  width: 260px;
+  border-left: 1px solid #d1d5db;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.inst-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: 3px solid #224268;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin-bottom: 0.85rem;
+}
+
+.inst-footer {
+  border-top: 1px solid #cbd5e1;
+  background: #f9fafb;
+  padding: 1rem 2rem;
+}
+
+.declaration-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  color: #111827;
+  margin-bottom: 0.9rem;
+  cursor: pointer;
+}
+
+.declaration-box input[type="checkbox"] {
+  margin-top: 0.25rem;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+}
+
+.inst-footer-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ==========================================================================
+   3. AUTHENTIC TCS iON / CONSORTIUM CBT EXAM INTERFACE
+   ========================================================================== */
+
+.cbt-screen {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  z-index: 600;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+/* Top bar 1: Exam Name & Paper/Instruction links */
+.cbt-topbar {
+  background: var(--tcs-header);
+  color: #ffffff;
+  height: 42px;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.92rem;
+}
+
+.cbt-exam-title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cbt-top-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cbt-top-link {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.22rem 0.65rem;
+  border-radius: 3px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.cbt-top-link:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Top bar 2: Section Tab & Timer */
+.cbt-subheader {
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 0 1rem;
+}
+
+.cbt-section-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+}
+
+.cbt-section-tab {
+  background: var(--tcs-blue-btn);
+  color: #fff;
+  padding: 0.4rem 1rem;
+  font-size: 0.83rem;
+  font-weight: 700;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cbt-passage-jumper {
+  margin-left: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.82rem;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  background: #fff;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.cbt-timer-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 1rem;
+}
+
+.cbt-timer-badge {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 0.32rem 0.85rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  font-family: "Courier New", Courier, monospace;
+  letter-spacing: 0.5px;
+}
+
+.cbt-timer-badge.timer-warning {
+  background: #dc2626;
+  animation: pulseWarning 1.2s infinite;
+}
+
+@keyframes pulseWarning {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+/* Main Workspace + Right Palette Sidebar */
+.cbt-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.cbt-left-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 2px solid #94a3b8;
+}
+
+/* Info Strip for Marks & Font Resize */
+.cbt-question-strip {
+  background: #e2e8f0;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 0.38rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.marks-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.marks-pos {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.marks-neg {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.font-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.font-btn {
+  background: #ffffff;
+  border: 1px solid #94a3b8;
+  padding: 0.12rem 0.45rem;
+  border-radius: 3px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.font-btn:hover {
+  background: #cbd5e1;
+}
+
+/* Split Screen: Left Passage Pane + Right Question Pane */
+.cbt-split-panes {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.cbt-passage-pane {
+  width: 52%;
+  border-right: 2px solid #cbd5e1;
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  background: #ffffff;
+  user-select: text;
+}
+
+.passage-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #1e3a5f;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.95rem;
+}
+
+.passage-title-tag {
+  font-weight: 800;
+  color: #1e3a5f;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+
+.passage-subject-tag {
+  font-size: 0.76rem;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.passage-content-text {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 1rem;
+  line-height: 1.72;
+  color: #111827;
+  text-align: justify;
+}
+
+.passage-content-text p {
+  margin-bottom: 1rem;
+}
+
+.passage-redacted-note {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #4b5563;
+  background: #f8fafc;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid #64748b;
+}
+
+.cbt-question-pane {
+  width: 48%;
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  background: #ffffff;
+  user-select: text;
+}
+
+.question-num-header {
+  font-weight: 800;
+  font-size: 0.96rem;
+  color: #111827;
+  border-bottom: 1px solid #cbd5e1;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.question-stem-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.58;
+  margin-bottom: 1.25rem;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.option-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.option-row:hover {
+  background: #f8fafc;
+  border-color: #64748b;
+}
+
+.option-row.selected {
+  background: #eff6ff;
+  border-color: #0c7cd5;
+  box-shadow: 0 0 0 1px #0c7cd5;
+}
+
+.option-row input[type="radio"] {
+  margin-top: 0.25rem;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.option-label-text {
+  font-size: 0.95rem;
+  color: #1f2937;
+  line-height: 1.48;
+}
+
+/* Bottom TCS Action Bar */
+.cbt-bottom-bar {
+  height: 54px;
+  background: #f1f5f9;
+  border-top: 1px solid #cbd5e1;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cbt-bottom-left, .cbt-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.tcs-btn {
+  padding: 0.48rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 3px;
+  border: 1px solid #94a3b8;
+  background: #ffffff;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.tcs-btn:hover {
+  background: #e2e8f0;
+}
+
+.tcs-btn-primary {
+  background: var(--tcs-blue-btn);
+  color: #ffffff;
+  border-color: #0960a5;
+}
+
+.tcs-btn-primary:hover {
+  background: var(--tcs-blue-btn-hover);
+}
+
+.tcs-btn-submit {
+  background: #16a34a;
+  color: #ffffff;
+  border-color: #15803d;
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.tcs-btn-submit:hover {
+  background: #15803d;
+}
+
+/* Right Sidebar: Candidate Info + 5-State Legend + Question Palette Grid */
+.cbt-right-sidebar {
+  width: 300px;
+  background: #eef6ff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cbt-candidate-box {
+  background: #ffffff;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cbt-avatar-sm {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+  font-weight: 800;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbt-cand-details {
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.cbt-cand-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* 5-State TCS Legend */
+.cbt-legend-box {
+  padding: 0.65rem 0.75rem;
+  background: #ffffff;
+  border-bottom: 1px solid #cbd5e1;
+  font-size: 0.74rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.legend-item.full-span {
+  grid-column: 1 / -1;
+}
+
+/* Exact TCS iON Palette Badges */
+.q-badge {
+  width: 32px;
+  height: 29px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.1s ease;
+}
+
+/* State 0: Not Visited (Gray bordered box) */
+.q-state-not-visited {
+  background: #f1f5f9;
+  color: #1e293b;
+  border: 1px solid #94a3b8;
+  border-radius: 3px;
+}
+
+/* State 1: Answered (Green TCS Shield) */
+.q-state-answered {
+  background: var(--tcs-answered);
+  color: #ffffff;
+  border: 1px solid #1b5e20;
+  border-radius: 10px 10px 2px 2px;
+}
+
+/* State 2: Not Answered (Red/Orange TCS Inverted Shield) */
+.q-state-not-answered {
+  background: var(--tcs-not-answered);
+  color: #ffffff;
+  border: 1px solid #991b1b;
+  border-radius: 2px 2px 10px 10px;
+}
+
+/* State 3: Marked for Review (Purple Circle) */
+.q-state-marked {
+  background: var(--tcs-marked);
+  color: #ffffff;
+  border: 1px solid #4a148c;
+  border-radius: 50%;
+}
+
+/* State 4: Answered & Marked for Review (Purple Circle + Green Check Dot) */
+.q-state-ans-marked {
+  background: var(--tcs-ans-marked);
+  color: #ffffff;
+  border: 1px solid #4a148c;
+  border-radius: 50%;
+}
+
+.q-state-ans-marked::after {
+  content: "✓";
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 13px;
+  height: 13px;
+  background: #22c55e;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #fff;
+}
+
+.q-badge.current-q {
+  outline: 2.5px solid #0f172a;
+  outline-offset: 1px;
+  transform: scale(1.06);
+}
+
+.cbt-palette-header {
+  background: var(--tcs-subheader);
+  color: #ffffff;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.cbt-palette-grid-wrap {
+  flex: 1;
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+.cbt-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  justify-items: center;
+}
+
+.cbt-sidebar-footer {
+  padding: 0.75rem;
+  background: #e2e8f0;
+  border-top: 1px solid #cbd5e1;
+}
+
+/* ==========================================================================
+   4. POST-TEST REVIEW, DETAILED EXPLANATIONS & REPORT VIEW
+   ========================================================================== */
+
+.review-header-card {
+  background: linear-gradient(135deg, #162d4c 0%, #1e3a5f 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.score-big-box {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 0.9rem 1.35rem;
+  text-align: center;
+}
+
+.score-big-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fbbf24;
+}
+
+.subject-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+  font-size: 0.88rem;
+}
+
+.subject-table th {
+  background: #f1f5f9;
+  color: #1e293b;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.subject-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.review-passage-block {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  margin-bottom: 1.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.review-passage-head {
+  background: #f8fafc;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 1rem 1.35rem;
+}
+
+.review-case-badge {
+  display: inline-block;
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.4rem;
+}
+
+.review-passage-body {
+  padding: 1.15rem 1.35rem;
+  background: #fcfcfd;
+  border-bottom: 1px solid #e2e8f0;
+  font-family: Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.68;
+  color: #1f2937;
+}
+
+.review-q-item {
+  padding: 1.25rem 1.35rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.review-q-item:last-child {
+  border-bottom: none;
+}
+
+.review-q-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.22rem 0.65rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.status-correct {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-wrong {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-unattempted {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.review-opt {
+  padding: 0.6rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 0.45rem;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.review-opt.opt-correct {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  color: #14532d;
+  font-weight: 600;
+}
+
+.review-opt.opt-user-wrong {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #7f1d1d;
+}
+
+.explanation-box {
+  margin-top: 0.85rem;
+  background: #f8fafc;
+  border-left: 4px solid #0f766e;
+  padding: 0.85rem 1rem;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.89rem;
+  color: #1e293b;
+}
+
+/* ==========================================================================
+   5. MODALS (SUBMIT SUMMARY, QUESTION PAPER, INSTRUCTIONS)
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 10px;
+  max-width: 820px;
+  width: 100%;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.modal-header {
+  background: var(--tcs-header);
+  color: #ffffff;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+
+.modal-body {
+  padding: 1.35rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 0.9rem 1.25rem;
+  background: #f8fafc;
+  border-top: 1px solid #cbd5e1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 980px) {
+  .cbt-split-panes {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .cbt-passage-pane, .cbt-question-pane {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid #cbd5e1;
+    overflow-y: visible;
+  }
+  .cbt-right-sidebar {
+    width: 230px;
+  }
+}
+
+@media print {
+  .portal-navbar, .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff;
+  }
+  .portal-container {
+    max-width: 100%;
+    padding: 0;
+  }
+  .review-passage-block {
+    break-inside: avoid-page;
+    box-shadow: none;
+  }
+}
+
+/* ==========================================================================
+   6. OFFICIAL TCS iON CANDIDATE LOGIN TERMINAL SCREEN
+   ========================================================================== */
+
+.login-screen {
+  position: fixed;
+  inset: 0;
+  background: #e2e8f0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-topbar {
+  background: #162d4c;
+  color: #ffffff;
+  padding: 0.65rem 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #f59e0b;
+}
+
+.login-sys-banner {
+  background: #224268;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.login-center-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.login-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 430px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.15);
+  overflow: hidden;
+}
+
+.login-box-header {
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 0.9rem 1.35rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-box-body {
+  padding: 1.5rem 1.35rem;
+}
+
+.login-field {
+  margin-bottom: 1.1rem;
+}
+
+.login-field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.login-input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #94a3b8;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.login-input-wrap:focus-within {
+  border-color: #0c7cd5;
+  box-shadow: 0 0 0 2px rgba(12, 124, 213, 0.2);
+}
+
+.login-input-icon {
+  background: #f1f5f9;
+  padding: 0.6rem 0.75rem;
+  border-right: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.login-input {
+  border: none;
+  outline: none;
+  padding: 0.62rem 0.85rem;
+  width: 100%;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.login-error-msg {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 0.55rem 0.75rem;
+  border-radius: 5px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.login-footer-bar {
+  background: #0f172a;
+  color: #94a3b8;
+  text-align: center;
+  padding: 0.65rem;
+  font-size: 0.78rem;
+}
+
+/* Saved Progress Tag & Resume Button on Cards */
+.in-progress-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.btn-resume {
+  background: #d97706;
+  color: #ffffff;
+  border-color: #b45309;
+}
+
+.btn-resume:hover {
+  background: #b45309;
+}
+
+.autosave-pill {
+  font-size: 0.75rem;
+  color: #bbf7d0;
+  background: rgba(22, 163, 74, 0.25);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  padding: 0.18rem 0.55rem;
+  border-radius: 12px;
+  font-weight: 600;
+}

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLAT PG 2027 – Official Pattern CBT Mock Portal & PYQ Suite</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ====================================================================
+       OFFICIAL TCS iON CANDIDATE LOGIN GATE SCREEN
+       ==================================================================== -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-topbar">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div class="brand-emblem" style="width:34px; height:34px; font-size:0.9rem;">NLU</div>
+        <div style="font-weight:700; font-size:0.98rem;">Consortium of National Law Universities — CLAT PG 2027 Examination Portal</div>
+      </div>
+      <div style="font-size:0.8rem; color:#cbd5e1;">Restricted Candidate Access</div>
+    </div>
+
+    <div class="login-sys-banner">
+      <div>
+        <div style="font-size:0.78rem; text-transform:uppercase; color:#cbd5e1; font-weight:600;">System Name :</div>
+        <div style="font-size:1.65rem; font-weight:800; color:#fbbf24; letter-spacing:0.5px;">CLAT-PG-2027-01</div>
+        <div style="font-size:0.78rem; color:#e2e8f0;">Authorized Candidate Terminal • Post Graduate (LLM)</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.78rem; text-transform:uppercase; color:#cbd5e1; font-weight:600;">Candidate Status :</div>
+        <div style="font-size:1.2rem; font-weight:700; color:#ffffff;" id="login-display-cand-name">Registered Candidate</div>
+        <div style="font-size:0.78rem; color:#93c5fd;">Subject: Master of Laws (LL.M.) — 120 Qs CBT Pattern</div>
+      </div>
+    </div>
+
+    <div class="login-center-wrap">
+      <form class="login-box" onsubmit="App.handleLoginSubmit(event)">
+        <div class="login-box-header">
+          <span>🔒 Candidate Sign In</span>
+          <span style="font-size:0.75rem; color:#64748b; font-weight:600;">Protected Portal</span>
+        </div>
+
+        <div class="login-box-body">
+          <div id="login-error-box" class="login-error-msg hidden">
+            Invalid Username or Password. Please check your assigned credentials.
+          </div>
+
+          <div class="login-field">
+            <label for="login-username">Candidate Username / Login ID</label>
+            <div class="login-input-wrap">
+              <span class="login-input-icon">👤</span>
+              <input
+                type="text"
+                id="login-username"
+                class="login-input"
+                placeholder="Enter assigned username"
+                autocomplete="username"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="login-field">
+            <label for="login-password">Password</label>
+            <div class="login-input-wrap">
+              <span class="login-input-icon">🔑</span>
+              <input
+                type="password"
+                id="login-password"
+                class="login-input"
+                placeholder="Enter password"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+          </div>
+
+          <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.83rem; color:#475569; margin-bottom:1.15rem; cursor:pointer;">
+            <input type="checkbox" id="login-remember" checked />
+            <span>Keep me signed in on this browser</span>
+          </label>
+
+          <button type="submit" class="tcs-btn tcs-btn-primary" style="width:100%; padding:0.7rem; font-size:0.95rem; font-weight:700;">
+            Sign In to Exam Portal ▶
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="login-footer-bar">
+      CLAT PG 2027 Private Mock &amp; PYQ Preparation Suite • Unauthorized public access is restricted
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       PORTAL NAVBAR (Hidden during active CBT Exam)
+       ==================================================================== -->
+  <header id="portal-navbar" class="portal-navbar">
+    <div class="brand-wrap">
+      <div class="brand-emblem">NLU</div>
+      <div>
+        <div class="brand-title">CLAT PG 2027 • CBT Mock &amp; PYQ Portal</div>
+        <div class="brand-subtitle">Consortium of NLUs Pattern • +1.00 / -0.25 • Save &amp; Resume Any Test</div>
+      </div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab-btn active" data-tab="dashboard" onclick="App.switchTab('dashboard')">
+        Mock Tests &amp; PYQs (<span id="nav-tests-count">11</span>)
+      </button>
+      <button class="nav-tab-btn" data-tab="history" onclick="App.switchTab('history')">
+        Completed Tests (<span id="nav-history-count">0</span>)
+      </button>
+      <button class="nav-tab-btn" data-tab="study-plan" onclick="App.switchTab('study-plan')">
+        Study Plan &amp; Case Tracker
+      </button>
+      <button class="nav-tab-btn" data-tab="manage" onclick="App.switchTab('manage')">
+        Settings, Password &amp; Backup
+      </button>
+    </nav>
+
+    <div style="display:flex; align-items:center; gap:0.55rem;">
+      <div class="candidate-pill" onclick="App.promptCandidateName()" title="Click to customize candidate name">
+        <span>👤</span>
+        <span id="nav-candidate-name">CLAT PG Aspirant</span>
+        <span style="font-size:0.72rem; opacity:0.75;">✎</span>
+      </div>
+      <button class="cbt-top-link" style="padding:0.35rem 0.65rem; border-radius:16px;" onclick="App.logout()" title="Lock portal & sign out">
+        🔒 Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       MAIN PORTAL CONTAINER
+       ==================================================================== -->
+  <main id="portal-main" class="portal-container">
+
+    <!-- 1. DASHBOARD VIEW -->
+    <section id="view-dashboard">
+      <div class="hero-banner">
+        <div>
+          <h1 id="hero-greeting">Welcome back! Ready to ace CLAT PG?</h1>
+          <p>
+            Practice in the exact TCS iON split-screen CBT interface with redacted <code>[1]</code> case excerpts, 4 Full-Length 120-Question Mocks, Official PYQ Papers (2020–2025), and instant Save &amp; Resume support for every test.
+          </p>
+        </div>
+        <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+          <button class="btn btn-outline" style="background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.3);" onclick="App.switchTab('study-plan')">
+            📋 View 4-Phase Study Plan
+          </button>
+          <button class="btn" style="background:#f59e0b; color:#111827; font-weight:700;" onclick="App.openOrResumeTest('clat-pg-full-mock-1')">
+            ▶ Open Full Mock 1 (120 Qs)
+          </button>
+        </div>
+      </div>
+
+      <!-- Saved In-Progress Sessions Container (Supports Multiple Paused Tests!) -->
+      <div id="saved-sessions-container"></div>
+
+      <!-- Quick Performance Metrics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Available Tests &amp; PYQs</div>
+          <div class="stat-value" id="stat-total-tests">11</div>
+          <div class="stat-sub" id="stat-total-questions-bank">792 Questions across 11 Tests</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tests Completed</div>
+          <div class="stat-value" id="stat-completed-count">0</div>
+          <div class="stat-sub">Saved with full explanations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Average Accuracy</div>
+          <div class="stat-value" id="stat-avg-accuracy">—</div>
+          <div class="stat-sub">Target: 75%+ for Top 3 NLUs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Landmark Cases Revised</div>
+          <div class="stat-value" id="stat-cases-revised">0 / 15</div>
+          <div class="stat-sub">Track in Study Plan tab</div>
+        </div>
+      </div>
+
+      <!-- Test Filter & Grid -->
+      <div class="section-header">
+        <h2 style="font-size:1.25rem; color:#0f172a;">Available Mock Tests, PYQs &amp; Sectional Tests</h2>
+        <div class="filter-pills">
+          <button class="filter-pill active" data-filter="ALL" onclick="App.setCategoryFilter('ALL')">All Tests (11)</button>
+          <button class="filter-pill" data-filter="Full-Length Mock" onclick="App.setCategoryFilter('Full-Length Mock')">Full-Length Mocks (4 × 120 Qs)</button>
+          <button class="filter-pill" data-filter="PYQ Paper" onclick="App.setCategoryFilter('PYQ Paper')">CLAT PG PYQs (2020–2025)</button>
+          <button class="filter-pill" data-filter="Sectional Test" onclick="App.setCategoryFilter('Sectional Test')">Subject &amp; Case Sectionals</button>
+        </div>
+      </div>
+
+      <div id="tests-grid" class="tests-grid"></div>
+    </section>
+
+    <!-- 2. COMPLETED TESTS HISTORY VIEW -->
+    <section id="view-history" class="hidden">
+      <div class="section-header">
+        <div>
+          <h2 style="font-size:1.3rem; color:#0f172a;">Completed Tests &amp; Attempt History</h2>
+          <p style="font-size:0.88rem; color:#475569;">
+            Review your answers, read full Supreme Court case explanations, and download reports (PDF/Print, Standalone HTML, or CSV) anytime.
+          </p>
+        </div>
+        <div style="display:flex; gap:0.6rem;">
+          <button class="btn btn-outline btn-sm" onclick="App.exportHistoryJSON()">⬇ Export Backup (JSON)</button>
+        </div>
+      </div>
+
+      <div id="history-list-container"></div>
+    </section>
+
+    <!-- 3. STUDY PLAN & LANDMARK CASE TRACKER VIEW -->
+    <section id="view-study-plan" class="hidden">
+      <div id="study-plan-container"></div>
+    </section>
+
+    <!-- 4. SETTINGS, PASSWORD, BACKUP & ADD CUSTOM TESTS VIEW -->
+    <section id="view-manage" class="hidden">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:1.5rem;">
+
+        <!-- Access Control & Login Credentials Card -->
+        <div class="test-card">
+          <div>
+            <span class="cat-badge cat-pyq">Security &amp; Login Gate</span>
+            <h3 style="margin-top:0.6rem;">Candidate Login Credentials &amp; Profile</h3>
+            <p>
+              Set the Candidate Name, Username, and Password required to unlock this portal. You can also update the default credentials in <code>js/app.js</code> (<code>DEFAULT_AUTH</code>) before pushing to GitHub/Cloudflare so they work across any browser.
+            </p>
+
+            <form onsubmit="App.saveCredentialsSettings(event)" style="margin-top:0.85rem; display:flex; flex-direction:column; gap:0.75rem;">
+              <div>
+                <label style="font-size:0.78rem; font-weight:700; color:#334155; display:block; margin-bottom:0.25rem;">CANDIDATE FULL NAME</label>
+                <input type="text" id="set-cand-name" class="login-input" style="border:1px solid #cbd5e1; border-radius:5px;" required />
+              </div>
+              <div>
+                <label style="font-size:0.78rem; font-weight:700; color:#334155; display:block; margin-bottom:0.25rem;">ASSIGNED LOGIN USERNAME</label>
+                <input type="text" id="set-username" class="login-input" style="border:1px solid #cbd5e1; border-radius:5px;" required />
+              </div>
+              <div>
+                <label style="font-size:0.78rem; font-weight:700; color:#334155; display:block; margin-bottom:0.25rem;">ASSIGNED LOGIN PASSWORD</label>
+                <input type="text" id="set-password" class="login-input" style="border:1px solid #cbd5e1; border-radius:5px;" required />
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top:0.25rem;">💾 Update Login Credentials</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Backup & Restore Progress Card -->
+        <div class="test-card">
+          <div>
+            <span class="cat-badge cat-full">Data Portability</span>
+            <h3 style="margin-top:0.6rem;">Backup &amp; Restore Progress (Saved &amp; Completed Tests)</h3>
+            <p>
+              All completed test attempts, in-progress paused tests, answers, scores, and landmark case revision checkboxes are stored in your browser. Export a JSON backup file anytime to keep a permanent copy or move to another device.
+            </p>
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1rem;">
+              <button class="btn btn-primary" onclick="App.exportHistoryJSON()">⬇ Download Backup (.json)</button>
+              <label class="btn btn-outline" style="cursor:pointer;">
+                ⬆ Restore from Backup (.json)
+                <input type="file" accept=".json" style="display:none;" onchange="App.importHistoryJSON(event)" />
+              </label>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.82rem; color:#64748b;">Need a fresh start?</span>
+            <button class="btn btn-outline btn-sm" style="color:#b91c1c; border-color:#fecaca;" onclick="App.clearAllHistory()">Clear All History</button>
+          </div>
+        </div>
+
+        <!-- Custom Test Loader Card -->
+        <div class="test-card">
+          <div>
+            <span class="cat-badge cat-sec">Expand Question Bank</span>
+            <h3 style="margin-top:0.6rem;">Import Additional Test Pack (JSON)</h3>
+            <p>
+              Want to load a new custom test file? Upload a JSON test pack below, or ask your AI assistant to add new mocks directly to <code>js/data/</code>!
+            </p>
+            <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+              <label class="btn btn-accent" style="cursor:pointer;">
+                ➕ Upload Test Pack (.json)
+                <input type="file" accept=".json" style="display:none;" onchange="App.importCustomTestJSON(event)" />
+              </label>
+              <button class="btn btn-outline" onclick="App.downloadSampleTestTemplate()">⬇ Sample Test JSON Template</button>
+            </div>
+          </div>
+          <div style="margin-top:1.25rem; font-size:0.82rem; color:#475569; background:#f8fafc; padding:0.75rem; border-radius:6px; border:1px solid #e2e8f0;">
+            <strong>Tip for GitHub / Cloudflare Pages Hosting:</strong> Any test added to <code>js/data/testsCatalog.js</code> is automatically available to all devices visiting your hosted link.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. POST-TEST DETAILED REVIEW & REPORT VIEW -->
+    <section id="view-review" class="hidden">
+      <div id="review-content-container"></div>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       PRE-TEST OFFICIAL TCS iON INSTRUCTIONS SCREEN
+       ==================================================================== -->
+  <div id="instructions-screen" class="instructions-screen hidden">
+    <div class="inst-header">
+      <div>Consortium of National Law Universities – CLAT PG (Post Graduate) CBT Interface</div>
+      <button class="cbt-top-link" onclick="App.closeInstructions()">✕ Return to Dashboard</button>
+    </div>
+
+    <div class="inst-body-wrap">
+      <div class="inst-main">
+        <h2>Please read the instructions carefully</h2>
+
+        <h3>A. General Instructions &amp; Exam Pattern:</h3>
+        <ol>
+          <li>
+            <strong>Test Title:</strong> <span id="inst-test-title" style="font-weight:700; color:#1e3a5f;"></span>
+          </li>
+          <li>
+            Total duration of this examination is <strong><span id="inst-duration">120</span> minutes</strong>, containing <strong><span id="inst-q-count">120</span> Multiple Choice Questions</strong> across <strong><span id="inst-p-count">20</span> Comprehension Passages</strong>.
+          </li>
+          <li>
+            <strong>Marking Scheme:</strong>
+            <ul>
+              <li>Each correct answer carries <strong>+1.00 (One) mark</strong>.</li>
+              <li>Each incorrect answer attracts a negative marking of <strong>-0.25 (Zero point two five) marks</strong>.</li>
+              <li>No marks (0.00) are deducted for unattempted questions.</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Save &amp; Resume Later:</strong> Your answers, question palette states, and remaining timer are auto-saved after every action. You can click <strong>"💾 Save &amp; Resume Later"</strong> at any time to pause the test and continue later from the exact same question and timer.
+          </li>
+          <li>
+            The Question Palette displayed on the right side of screen will show the status of each question using one of the following five official TCS iON symbols:
+          </li>
+        </ol>
+
+        <table class="inst-legend-table">
+          <tbody>
+            <tr>
+              <td style="width:55px; text-align:center;"><span class="q-badge q-state-not-visited">1</span></td>
+              <td>You have <strong>NOT visited</strong> the question yet.</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;"><span class="q-badge q-state-not-answered">2</span></td>
+              <td>You have <strong>NOT answered</strong> the question.</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;"><span class="q-badge q-state-answered">3</span></td>
+              <td>You have <strong>answered</strong> the question.</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;"><span class="q-badge q-state-marked">4</span></td>
+              <td>You have <strong>NOT answered</strong> the question, but have <strong>marked the question for review</strong>.</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;"><span class="q-badge q-state-ans-marked">5</span></td>
+              <td>The question(s) <strong>"Answered and Marked for Review"</strong> <u>WILL BE CONSIDERED FOR EVALUATION</u>.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>B. Navigating &amp; Answering a Question:</h3>
+        <ol start="6">
+          <li>Click on the question number in the Question Palette at the right of your screen to go to that numbered question directly.</li>
+          <li>Click on <strong>Save &amp; Next</strong> to save your answer for the current question and then go to the next question.</li>
+          <li>Click on <strong>Mark for Review &amp; Next</strong> to save your answer for the current question (if an option is selected), mark it for review, and then go to the next question.</li>
+          <li>To deselect your chosen answer, click on the <strong>Clear Response</strong> button at the bottom bar.</li>
+        </ol>
+      </div>
+
+      <aside class="inst-side-profile">
+        <div class="inst-avatar" id="inst-avatar-initials">CA</div>
+        <div style="font-weight:700; font-size:1.05rem; color:#0f172a; text-align:center;" id="inst-candidate-name">CLAT PG Aspirant</div>
+        <div style="font-size:0.8rem; color:#64748b; margin-top:0.25rem;">Roll No: CLATPG-2027-001</div>
+      </aside>
+    </div>
+
+    <div class="inst-footer">
+      <label class="declaration-box">
+        <input type="checkbox" id="inst-declaration-chk" onchange="App.toggleReadyBtn()" />
+        <span>
+          I have read and understood the instructions. All computer hardware allotted to me are in proper working condition. I declare that I am not in possession of / not wearing / not carrying any prohibited gadget like mobile phone, bluetooth devices etc. I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this Test and/or to disciplinary action.
+        </span>
+      </label>
+
+      <div class="inst-footer-btns">
+        <button class="tcs-btn" onclick="App.closeInstructions()">← Previous / Cancel</button>
+        <button id="inst-start-btn" class="tcs-btn tcs-btn-primary" style="padding:0.6rem 1.75rem; font-size:0.95rem; opacity:0.5; cursor:not-allowed;" disabled onclick="App.beginTestFromInstructions()">
+          I am ready to begin ▶
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       AUTHENTIC TCS iON / CONSORTIUM OF NLUs CBT EXAM INTERFACE
+       ==================================================================== -->
+  <div id="cbt-screen" class="cbt-screen hidden">
+
+    <!-- Topbar 1 -->
+    <div class="cbt-topbar">
+      <div class="cbt-exam-title">
+        <span style="background:#f59e0b; color:#111827; padding:0.1rem 0.45rem; border-radius:3px; font-weight:800; font-size:0.78rem;">CLAT PG</span>
+        <span id="cbt-header-title">CLAT PG 2027 Examination</span>
+        <span id="cbt-autosave-indicator" class="autosave-pill">✓ Auto-Saved</span>
+      </div>
+      <div class="cbt-top-links">
+        <button class="cbt-top-link" onclick="App.openQuestionPaperModal()">📄 Question Paper</button>
+        <button class="cbt-top-link" onclick="App.openInstructionsModal()">ℹ Instructions</button>
+        <button class="cbt-top-link" style="background:#d97706; border-color:#f59e0b; font-weight:700;" onclick="App.pauseAndExitToDashboard()">
+          💾 Save &amp; Resume Later
+        </button>
+      </div>
+    </div>
+
+    <!-- Topbar 2: Section & Timer -->
+    <div class="cbt-subheader">
+      <div class="cbt-section-tabs">
+        <div class="cbt-section-tab">
+          <span>Post Graduate (LLM)</span>
+          <span title="Section Information">ⓘ</span>
+        </div>
+        <select id="cbt-passage-select" class="cbt-passage-jumper" onchange="App.jumpToPassage(this.value)"></select>
+      </div>
+
+      <div class="cbt-timer-box">
+        <span style="font-size:0.84rem; font-weight:700; color:#1e293b;">Time Left :</span>
+        <div id="cbt-timer-display" class="cbt-timer-badge">120:00</div>
+      </div>
+    </div>
+
+    <!-- Main Split Area + Right Sidebar -->
+    <div class="cbt-body">
+      <div class="cbt-left-area">
+
+        <!-- Question Type & Marks Strip -->
+        <div class="cbt-question-strip">
+          <div>Question Type : <strong>Multiple Choice Question (Comprehension)</strong></div>
+          <div class="marks-info">
+            <span>Marks for correct answer : <span class="marks-pos">+1.00</span></span>
+            <span>|</span>
+            <span>Negative Marks : <span class="marks-neg">-0.25</span></span>
+            <span>|</span>
+            <div class="font-controls">
+              <span>Text Size:</span>
+              <button class="font-btn" onclick="App.changeFontSize(-1)">A-</button>
+              <button class="font-btn" onclick="App.changeFontSize(0)">A</button>
+              <button class="font-btn" onclick="App.changeFontSize(1)">A+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Split Screen: Left Passage + Right Question -->
+        <div class="cbt-split-panes">
+          <!-- Left Pane: Passage -->
+          <div id="cbt-passage-pane" class="cbt-passage-pane">
+            <div class="passage-header-bar">
+              <span id="cbt-passage-heading" class="passage-title-tag">PASSAGE 1 OF 20</span>
+              <span id="cbt-passage-subject" class="passage-subject-tag">Constitutional Law</span>
+            </div>
+            <div id="cbt-passage-text" class="passage-content-text"></div>
+            <div class="passage-redacted-note">
+              [Note: Case name &amp; citation are redacted (e.g., [1], [2]) during the live examination as per official CLAT PG pattern, and will be unlocked in full upon submission.]
+            </div>
+          </div>
+
+          <!-- Right Pane: Question & Options -->
+          <div id="cbt-question-pane" class="cbt-question-pane">
+            <div class="question-num-header">
+              <span id="cbt-q-number-label">Question No. 1</span>
+              <span id="cbt-q-passage-sublabel" style="font-size:0.78rem; color:#64748b; font-weight:600;"></span>
+            </div>
+            <div id="cbt-q-stem" class="question-stem-text"></div>
+            <div id="cbt-options-container" class="options-list"></div>
+          </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="cbt-bottom-bar">
+          <div class="cbt-bottom-left">
+            <button class="tcs-btn" onclick="App.markForReviewAndNext()">Mark for Review &amp; Next</button>
+            <button class="tcs-btn" onclick="App.clearResponse()">Clear Response</button>
+            <button class="tcs-btn" style="background:#fffbeb; border-color:#f59e0b; color:#92400e;" onclick="App.pauseAndExitToDashboard()">
+              💾 Save &amp; Resume Later
+            </button>
+          </div>
+          <div class="cbt-bottom-right">
+            <button class="tcs-btn" onclick="App.prevQuestion()">← Previous</button>
+            <button class="tcs-btn tcs-btn-primary" onclick="App.saveAndNext()">Save &amp; Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar: Candidate + 5-State Legend + Palette -->
+      <aside class="cbt-right-sidebar">
+        <div class="cbt-candidate-box">
+          <div class="cbt-avatar-sm" id="cbt-avatar-initials">CA</div>
+          <div class="cbt-cand-details">
+            <div class="cbt-cand-name" id="cbt-candidate-name">CLAT PG Aspirant</div>
+            <div style="color:#64748b; font-size:0.75rem;">CLATPG-2027-001</div>
+          </div>
+        </div>
+
+        <!-- 5-State Live Counter Legend -->
+        <div class="cbt-legend-box">
+          <div class="legend-item">
+            <span id="cnt-answered" class="q-badge q-state-answered" style="cursor:default;">0</span>
+            <span>Answered</span>
+          </div>
+          <div class="legend-item">
+            <span id="cnt-not-answered" class="q-badge q-state-not-answered" style="cursor:default;">0</span>
+            <span>Not Answered</span>
+          </div>
+          <div class="legend-item">
+            <span id="cnt-not-visited" class="q-badge q-state-not-visited" style="cursor:default;">0</span>
+            <span>Not Visited</span>
+          </div>
+          <div class="legend-item">
+            <span id="cnt-marked" class="q-badge q-state-marked" style="cursor:default;">0</span>
+            <span>Marked for Review</span>
+          </div>
+          <div class="legend-item full-span">
+            <span id="cnt-ans-marked" class="q-badge q-state-ans-marked" style="cursor:default;">0</span>
+            <span>Answered &amp; Marked for Review (will be evaluated)</span>
+          </div>
+        </div>
+
+        <div class="cbt-palette-header">
+          Choose a Question
+        </div>
+
+        <div class="cbt-palette-grid-wrap">
+          <div id="cbt-palette-grid" class="cbt-palette-grid"></div>
+        </div>
+
+        <div class="cbt-sidebar-footer">
+          <button class="tcs-btn tcs-btn-submit" onclick="App.openSubmitModal()">Submit Test</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL FOR SUBMIT SUMMARY / QUESTION PAPER / INSTRUCTIONS
+       ==================================================================== -->
+  <div id="cbt-modal-overlay" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span id="cbt-modal-title">Exam Summary</span>
+        <button class="cbt-top-link" onclick="App.closeModal()">✕ Close</button>
+      </div>
+      <div id="cbt-modal-body" class="modal-body"></div>
+      <div id="cbt-modal-footer" class="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data/studyPlan.js"></script>
+  <script src="js/data/passages_const_recent.js"></script>
+  <script src="js/data/passages_pyq_2024.js"></script>
+  <script src="js/data/passages_pyq_2022_23.js"></script>
+  <script src="js/data/passages_jurisprudence.js"></script>
+  <script src="js/data/passages_core_laws.js"></script>
+  <script src="js/data/passages_pyq_2025_real.js"></script>
+  <script src="js/data/passages_pyq_2020_23_real.js"></script>
+  <script src="js/data/passages_advanced_mock.js"></script>
+  <script src="js/data/passages_advanced_mock_2.js"></script>
+  <script src="js/data/testsCatalog.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
