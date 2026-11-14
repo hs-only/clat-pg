@@ -36,6 +36,8 @@ const App = {
   authConfig: { ...DEFAULT_AUTH },
   currentTab: "dashboard",
   categoryFilter: "ALL",
+  statusFilter: "ALL",
+  testSearchQuery: "",
   candidateName: DEFAULT_AUTH.candidateName,
   completedHistory: [],
   savedSessionsMap: {}, // { [testId]: examSessionObj }
@@ -51,6 +53,8 @@ const App = {
   currentReviewAttempt: null,
   reviewFilterStatus: "ALL",
   reviewFilterSubject: "ALL",
+  tenYearCategoryFilter: "ALL",
+  tenYearSearchQuery: "",
 
   init() {
     this.loadStoredData();
@@ -58,6 +62,7 @@ const App = {
     this.updateCandidateUI();
     this.populateSettingsForm();
     this.renderDashboard();
+    this.renderTenYearAnalysisView();
     this.renderHistoryView();
     this.renderStudyPlanView();
   },
@@ -275,7 +280,7 @@ const App = {
 
   switchTab(tabName) {
     this.currentTab = tabName;
-    const views = ["dashboard", "history", "study-plan", "manage", "review"];
+    const views = ["dashboard", "ten-year", "history", "study-plan", "manage", "review"];
     views.forEach(v => {
       const el = document.getElementById(`view-${v}`);
       if (el) el.classList.toggle("hidden", v !== tabName);
@@ -286,6 +291,7 @@ const App = {
     });
 
     if (tabName === "dashboard") this.renderDashboard();
+    if (tabName === "ten-year") this.renderTenYearAnalysisView();
     if (tabName === "history") this.renderHistoryView();
     if (tabName === "study-plan") this.renderStudyPlanView();
     if (tabName === "manage") this.populateSettingsForm();
@@ -294,9 +300,22 @@ const App = {
 
   setCategoryFilter(cat) {
     this.categoryFilter = cat;
-    document.querySelectorAll(".filter-pill").forEach(btn => {
+    document.querySelectorAll(".filter-pill:not(.tenyr-cat-pill)").forEach(btn => {
       btn.classList.toggle("active", btn.getAttribute("data-filter") === cat);
     });
+    this.renderTestsGrid();
+  },
+
+  setStatusFilter(status) {
+    this.statusFilter = status;
+    document.querySelectorAll(".status-pill").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-status") === status);
+    });
+    this.renderTestsGrid();
+  },
+
+  setTestSearchQuery(query) {
+    this.testSearchQuery = (query || "").trim();
     this.renderTestsGrid();
   },
 
@@ -409,21 +428,93 @@ const App = {
     const grid = document.getElementById("tests-grid");
     if (!grid) return;
 
-    const tests = (window.CLAT_TESTS || []).filter(t =>
-      this.categoryFilter === "ALL" ? true : t.category === this.categoryFilter
-    );
+    const allTests = window.CLAT_TESTS || [];
+    const qLower = (this.testSearchQuery || "").toLowerCase();
+
+    const tests = allTests.filter(t => {
+      if (this.categoryFilter !== "ALL" && t.category !== this.categoryFilter) {
+        return false;
+      }
+
+      const isPaused = !!this.savedSessionsMap[t.id];
+      const isCompleted = this.completedHistory.some(h => h.testId === t.id);
+
+      if (this.statusFilter === "IN_PROGRESS" && !isPaused) return false;
+      if (this.statusFilter === "COMPLETED" && !isCompleted) return false;
+      if (this.statusFilter === "NOT_STARTED" && (isPaused || isCompleted)) return false;
+
+      if (qLower) {
+        const passageHaystack = (t.passages || [])
+          .map(p => `${p.subject || ""} ${p.topic || ""} ${p.caseTitle || ""}`)
+          .join(" ");
+        const fullHaystack = `${t.title} ${t.description} ${t.category} ${t.badge || ""} ${passageHaystack}`.toLowerCase();
+        if (!fullHaystack.includes(qLower)) return false;
+      }
+      return true;
+    });
+
+    const sublabel = document.getElementById("tests-showing-sublabel");
+    if (sublabel) {
+      sublabel.textContent = `Showing ${tests.length} of ${allTests.length} tests • Click any test to launch the split-screen CBT simulator or resume progress.`;
+    }
+
+    if (tests.length === 0) {
+      grid.innerHTML = `
+        <div class="stat-card" style="grid-column: 1 / -1; text-align:center; padding:2.5rem 1.5rem;">
+          <h3 style="color:#0f172a; margin-bottom:0.4rem;">No matching tests found</h3>
+          <p style="color:#64748b; font-size:0.88rem; margin-bottom:1rem;">
+            Try clearing your search filter or switching to "All Tests" and "All Status".
+          </p>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('test-search-input').value=''; App.testSearchQuery=''; App.setCategoryFilter('ALL'); App.setStatusFilter('ALL');">
+            Reset All Filters
+          </button>
+        </div>
+      `;
+      return;
+    }
 
     grid.innerHTML = tests
       .map(test => {
         const attempts = this.completedHistory.filter(h => h.testId === test.id);
         const latestAttempt = attempts.length > 0 ? attempts[0] : null;
+        const bestScore =
+          attempts.length > 0
+            ? Math.max(...attempts.map(a => a.score))
+            : null;
         const savedSession = this.savedSessionsMap[test.id] || null;
 
         let catClass = "cat-sec";
-        if (test.category === "Full-Length Mock") catClass = "cat-full";
-        else if (test.category === "PYQ Paper") catClass = "cat-pyq";
+        let cardTypeClass = "card-type-sec";
+        if (test.category === "Full-Length Mock") {
+          catClass = "cat-full";
+          cardTypeClass = "card-type-full";
+        } else if (test.category === "PYQ Paper") {
+          catClass = "cat-pyq";
+          cardTypeClass = "card-type-pyq";
+        }
 
-        let savedInfoHtml = "";
+        // Compute Subject Breakdown Chips automatically from passages
+        const subjectCounts = {};
+        (test.passages || []).forEach(p => {
+          const shortSub = (p.subject || "Law")
+            .replace("Constitutional Law", "Constitutional")
+            .replace("Jurisprudence & Legal Theory", "Jurisprudence")
+            .replace("Public International Law", "Intl Law")
+            .replace("Arbitration & Commercial Law", "Arbitration")
+            .replace("Environmental Law & Law of Torts", "Environment & Torts");
+          subjectCounts[shortSub] = (subjectCounts[shortSub] || 0) + (p.questions ? p.questions.length : 6);
+        });
+
+        const subjectChipsHtml = Object.entries(subjectCounts)
+          .slice(0, 5)
+          .map(
+            ([sub, cnt]) =>
+              `<span class="test-subject-chip">${this.escapeHtml(sub)}: <strong>${cnt} Qs</strong></span>`
+          )
+          .join("");
+
+        let topRightBadgeHtml = "";
+        let statusStripHtml = "";
         let actionButtonsHtml = "";
 
         if (savedSession) {
@@ -431,56 +522,108 @@ const App = {
           const answeredCount = Object.values(savedSession.responses || {}).filter(
             r => r.state === Q_STATE.ANSWERED || r.state === Q_STATE.ANSWERED_MARKED
           ).length;
+          const pctDone = Math.round((answeredCount / Math.max(1, test.totalQuestions)) * 100);
           const curQ = (savedSession.currentQIndex || 0) + 1;
 
-          savedInfoHtml = `<span class="in-progress-tag">⏸ Paused at Q.${curQ} (${answeredCount}/${test.totalQuestions} Ans • ${minsLeft}m left)</span>`;
+          topRightBadgeHtml = `<span class="in-progress-tag">⏸ Paused at Q.${curQ}</span>`;
+          statusStripHtml = `
+            <div class="test-status-strip strip-paused">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700;">
+                <span>Answered: ${answeredCount} / ${test.totalQuestions} Qs (${pctDone}%)</span>
+                <span>⏱ ${minsLeft} mins left</span>
+              </div>
+              <div class="test-progress-track">
+                <div class="test-progress-fill" style="width:${Math.max(4, pctDone)}%; background:#d97706;"></div>
+              </div>
+            </div>
+          `;
+
           actionButtonsHtml = `
             <button class="btn btn-resume" style="flex:1;" onclick="App.resumeSavedTestById('${test.id}')">
-              ▶ Resume Test (Q.${curQ} • ${minsLeft}m left)
+              ▶ Resume from Q.${curQ} (${minsLeft}m left)
             </button>
             <button class="btn btn-outline btn-sm" onclick="App.startFreshTestConfirm('${test.id}')" title="Discard saved progress and start from Question 1">
-              ↻ Start Fresh
+              ↻ Restart
             </button>
             ${
               latestAttempt
-                ? `<button class="btn btn-outline btn-sm" onclick="App.openReviewByAttemptId('${latestAttempt.attemptId}')">👁 Report</button>`
+                ? `<button class="btn btn-outline btn-sm" onclick="App.openReviewByAttemptId('${latestAttempt.attemptId}')" title="View previous completed attempt report">👁 Solutions</button>`
                 : ""
             }
           `;
-        } else {
-          savedInfoHtml = latestAttempt
-            ? `<span class="attempted-tag">✓ Last Score: ${latestAttempt.score.toFixed(2)} / ${test.maxMarks}</span>`
-            : `<span style="font-size:0.75rem; color:#64748b; font-weight:600;">${this.escapeHtml(test.recommendedPhase || "")}</span>`;
+        } else if (latestAttempt) {
+          const scorePct = Math.max(
+            0,
+            Math.min(100, Math.round((latestAttempt.score / Math.max(1, test.maxMarks)) * 100))
+          );
+          topRightBadgeHtml = `<span class="attempted-tag">✓ Completed (${attempts.length}×)</span>`;
+          statusStripHtml = `
+            <div class="test-status-strip strip-completed">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-weight:700;">
+                <span>Last: ${latestAttempt.score.toFixed(2)} / ${test.maxMarks} (${latestAttempt.accuracy.toFixed(0)}% Acc)</span>
+                <span>Best: ${bestScore.toFixed(2)} / ${test.maxMarks}</span>
+              </div>
+              <div class="test-progress-track">
+                <div class="test-progress-fill" style="width:${Math.max(5, scorePct)}%; background:#16a34a;"></div>
+              </div>
+            </div>
+          `;
 
           actionButtonsHtml = `
-            <button class="btn btn-primary" style="flex:1;" onclick="App.startInstructions('${test.id}')">
-              ${latestAttempt ? "↻ Retake in CBT Mode" : "▶ Start Test (CBT UI)"}
+            <button class="btn btn-primary" style="flex:1;" onclick="App.openReviewByAttemptId('${latestAttempt.attemptId}')">
+              👁 View Solutions &amp; Report
             </button>
-            ${
-              latestAttempt
-                ? `<button class="btn btn-outline" onclick="App.openReviewByAttemptId('${latestAttempt.attemptId}')">
-                     👁 View Solutions &amp; Report
-                   </button>`
-                : ""
-            }
+            <button class="btn btn-outline" onclick="App.startInstructions('${test.id}')">
+              ↻ Retake
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="App.printReportPDF('${latestAttempt.attemptId}')" title="Print or Save PDF Report">
+              🖨 PDF
+            </button>
+          `;
+        } else {
+          topRightBadgeHtml = `<span class="phase-tag">${this.escapeHtml(test.recommendedPhase || "Official CBT Pattern")}</span>`;
+          actionButtonsHtml = `
+            <button class="btn btn-primary" style="flex:1;" onclick="App.startInstructions('${test.id}')">
+              ▶ Start Test (${test.totalQuestions} Qs • ${test.durationMinutes} Mins)
+            </button>
           `;
         }
 
         return `
-          <div class="test-card" style="${savedSession ? "border: 2px solid #f59e0b;" : ""}">
+          <div class="test-card ${cardTypeClass} ${savedSession ? "card-state-paused" : ""}">
             <div class="test-card-top">
               <div class="badge-row">
-                <span class="cat-badge ${catClass}">${this.escapeHtml(test.badge || test.category)}</span>
-                ${savedInfoHtml}
+                <span class="cat-badge ${catClass}">${this.escapeHtml(test.category)}</span>
+                ${topRightBadgeHtml}
               </div>
+
               <h3>${this.escapeHtml(test.title)}</h3>
               <p>${this.escapeHtml(test.description)}</p>
-              <div class="test-meta-list">
-                <span>📝 <strong>${test.totalQuestions}</strong> Questions</span>
-                <span>📚 <strong>${test.totalPassages}</strong> Passages</span>
-                <span>⏱ <strong>${test.durationMinutes}</strong> Mins</span>
-                <span>⚖ <strong>+1.00 / -0.25</strong></span>
+
+              <div class="test-subject-chips">
+                ${subjectChipsHtml}
               </div>
+
+              <div class="test-metrics-grid">
+                <div class="test-metric-box">
+                  <div class="test-metric-val">${test.totalQuestions}</div>
+                  <div class="test-metric-lbl">Questions</div>
+                </div>
+                <div class="test-metric-box">
+                  <div class="test-metric-val">${test.totalPassages}</div>
+                  <div class="test-metric-lbl">Passages</div>
+                </div>
+                <div class="test-metric-box">
+                  <div class="test-metric-val">${test.durationMinutes}m</div>
+                  <div class="test-metric-lbl">Duration</div>
+                </div>
+                <div class="test-metric-box">
+                  <div class="test-metric-val">+1 / -0.25</div>
+                  <div class="test-metric-lbl">Marking</div>
+                </div>
+              </div>
+
+              ${statusStripHtml}
             </div>
 
             <div class="test-card-actions">
@@ -1736,6 +1879,302 @@ const App = {
         </tbody>
       </table>
     `;
+  },
+
+  // ========================================================================
+  // 10-YEAR PYQ ASSESSMENT & REPEATED QUESTIONS HUB (2016–2025)
+  // ========================================================================
+
+  setTenYearCategoryFilter(cat) {
+    this.tenYearCategoryFilter = cat;
+    document.querySelectorAll(".tenyr-cat-pill").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-cat") === cat);
+    });
+    this.renderRepeatedQuestionsList();
+  },
+
+  setTenYearSearch(query) {
+    this.tenYearSearchQuery = (query || "").trim();
+    this.renderRepeatedQuestionsList();
+  },
+
+  renderRepeatedQuestionsList() {
+    const listContainer = document.getElementById("tenyr-repeated-list");
+    const countSpan = document.getElementById("tenyr-repeated-count");
+    const data = window.CLAT_10YR_ANALYSIS;
+    if (!listContainer || !data) return;
+
+    const qLower = (this.tenYearSearchQuery || "").toLowerCase();
+    const filtered = (data.repeatedQuestions || []).filter(item => {
+      const catMatch =
+        this.tenYearCategoryFilter === "ALL" || item.category === this.tenYearCategoryFilter;
+      if (!catMatch) return false;
+      if (!qLower) return true;
+      const haystack = `${item.category} ${item.topic} ${item.caseOrProvision} ${item.directEraFraming} ${item.passageEraFraming} ${item.examTakeaway} ${(item.yearsAsked || []).join(" ")}`.toLowerCase();
+      return haystack.includes(qLower);
+    });
+
+    if (countSpan) {
+      countSpan.textContent = `${filtered.length} of ${data.repeatedQuestions.length} Recurring Themes Shown`;
+    }
+
+    if (filtered.length === 0) {
+      listContainer.innerHTML = `
+        <div class="stat-card" style="text-align:center; padding:2rem;">
+          <strong>No matching repeated questions found for your filter.</strong>
+        </div>
+      `;
+      return;
+    }
+
+    listContainer.innerHTML = filtered
+      .map(
+        item => `
+        <div class="stat-card" style="border-left: 4px solid #1e3a5f; padding:1.15rem 1.35rem;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.65rem;">
+            <div>
+              <span class="cat-badge cat-full">${this.escapeHtml(item.category)}</span>
+              <span class="cat-badge cat-pyq" style="margin-left:0.35rem;">Asked ${item.timesAsked}× in 10 Years</span>
+              <h3 style="margin-top:0.5rem; font-size:1.05rem; color:#0f172a;">${this.escapeHtml(item.topic)}</h3>
+              <div style="font-size:0.86rem; font-weight:700; color:#1e3a5f; margin-top:0.2rem;">
+                ⚖ Key Cases / Provisions: ${this.escapeHtml(item.caseOrProvision)}
+              </div>
+            </div>
+            <div style="display:flex; gap:0.3rem; flex-wrap:wrap; align-items:center;">
+              ${(item.yearsAsked || [])
+                .map(
+                  yr =>
+                    `<span style="background:#f1f5f9; border:1px solid #cbd5e1; color:#0f172a; font-size:0.75rem; font-weight:700; padding:0.15rem 0.45rem; border-radius:4px;">${this.escapeHtml(yr)}</span>`
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:0.85rem; margin-top:0.85rem;">
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.75rem;">
+              <div style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#475569; margin-bottom:0.25rem;">
+                📌 2016–2019 Direct MCQ Era Framing
+              </div>
+              <div style="font-size:0.85rem; color:#334155; line-height:1.5;">
+                ${this.escapeHtml(item.directEraFraming)}
+              </div>
+            </div>
+
+            <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:0.75rem;">
+              <div style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:#1e40af; margin-bottom:0.25rem;">
+                📖 2020–2025 Comprehension Passage Framing
+              </div>
+              <div style="font-size:0.85rem; color:#1e3a8a; line-height:1.5;">
+                ${this.escapeHtml(item.passageEraFraming)}
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:0.75rem; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:0.65rem 0.85rem; font-size:0.85rem; color:#14532d;">
+            <strong>🎯 High-Yield Exam Takeaway:</strong> ${this.escapeHtml(item.examTakeaway)}
+          </div>
+        </div>
+      `
+      )
+      .join("");
+  },
+
+  renderTenYearAnalysisView() {
+    const container = document.getElementById("ten-year-container");
+    const data = window.CLAT_10YR_ANALYSIS;
+    if (!container || !data) return;
+
+    const categories = [
+      "ALL",
+      ...Array.from(new Set((data.repeatedQuestions || []).map(r => r.category)))
+    ];
+
+    container.innerHTML = `
+      <div class="hero-banner" style="background:linear-gradient(120deg, #0f172a 0%, #1e3a5f 60%, #0f766e 100%);">
+        <div>
+          <h1>CLAT PG 10-Year Comprehensive PYQ Assessment (2016 – 2025)</h1>
+          <p>
+            ${this.escapeHtml(data.meta.headlineInsight)}
+          </p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.5rem; min-width:240px;">
+          <button class="btn" style="background:#f59e0b; color:#111827; font-weight:800;" onclick="App.openOrResumeTest('clat-pg-pyq-10yr-repeated')">
+            ▶ Take 10-Yr Repeated PYQ Test (36 Qs)
+          </button>
+          <button class="btn btn-outline" style="background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.3);" onclick="App.openOrResumeTest('clat-pg-pyq-2025')">
+            ▶ Take 2024–25 PYQ Test (36 Qs)
+          </button>
+        </div>
+      </div>
+
+      <!-- 1. Three Structural Eras of CLAT PG -->
+      <h3 style="margin-bottom:0.75rem; color:#0f172a;">1. Structural Evolution of CLAT PG Over the Last 10 Years (2016–2025)</h3>
+      <div class="tests-grid" style="margin-bottom:2rem;">
+        ${data.structuralEras
+          .map(
+            e => `
+            <div class="test-card">
+              <div>
+                <div class="badge-row">
+                  <span class="cat-badge cat-pyq">${this.escapeHtml(e.pattern)}</span>
+                </div>
+                <h3 style="margin-top:0.5rem;">${this.escapeHtml(e.era)}</h3>
+                <p style="font-size:0.84rem; color:#0f766e; font-weight:700; margin-bottom:0.45rem;">
+                  Blueprint: ${this.escapeHtml(e.blueprint)}
+                </p>
+                <p style="font-size:0.85rem; color:#334155; margin-bottom:0.5rem;">
+                  <strong>How Questions Were Asked:</strong> ${this.escapeHtml(e.questionNature)}
+                </p>
+                <div style="background:#fffbeb; border:1px solid #fde68a; padding:0.6rem; border-radius:6px; font-size:0.82rem; color:#92400e;">
+                  <strong>Why It Matters for 2027:</strong> ${this.escapeHtml(e.relevanceToday)}
+                </div>
+              </div>
+            </div>
+          `
+          )
+          .join("")}
+      </div>
+
+      <!-- 2. Year-by-Year Subject-Wise Question Count Matrix (2016–2025) -->
+      <h3 style="margin-bottom:0.4rem; color:#0f172a;">2. Year-by-Year Subject Weightage Matrix (2016 to 2025 — All 10 Papers)</h3>
+      <p style="font-size:0.86rem; color:#475569; margin-bottom:0.85rem;">
+        Exact number of questions asked from each subject across every CLAT PG paper from 2016 to 2025, along with modern passage-era share (2020–2025).
+      </p>
+      <div style="overflow-x:auto; margin-bottom:2rem;">
+        <table class="subject-table">
+          <thead>
+            <tr>
+              <th>Subject / Area of Law</th>
+              ${data.yearlyMatrix.years.map(y => `<th style="text-align:center;">${y}</th>`).join("")}
+              <th>Modern Share</th>
+              <th>10-Year Trend &amp; Insight</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.yearlyMatrix.subjects
+              .map(
+                row => `
+                <tr>
+                  <td><strong>${this.escapeHtml(row.subject)}</strong></td>
+                  ${row.counts
+                    .map(
+                      c =>
+                        `<td style="text-align:center; font-weight:700; color:#1e3a5f; background:${c >= 30 ? "#eff6ff" : c >= 12 ? "#f8fafc" : "#ffffff"};">${c}</td>`
+                    )
+                    .join("")}
+                  <td style="white-space:nowrap;"><span class="cat-badge cat-full">${this.escapeHtml(row.avgModernShare)}</span></td>
+                  <td style="font-size:0.82rem; color:#334155; min-width:240px;">${this.escapeHtml(row.trend)}</td>
+                </tr>
+              `
+              )
+              .join("")}
+            <tr style="background:#f1f5f9; font-weight:800;">
+              <td>TOTAL QUESTIONS</td>
+              ${data.yearlyMatrix.totalQsPerYear.map(tot => `<td style="text-align:center; color:#0f172a;">${tot}</td>`).join("")}
+              <td>100% (20 Passages)</td>
+              <td style="font-size:0.8rem; color:#475569;">2016–18: 150 Direct Qs | 2019–20: 100 Qs | 2021–25: 120 Passage Qs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Question Archetypes Inside Modern Passages -->
+      <h3 style="margin-bottom:0.75rem; color:#0f172a;">3. Anatomy of a Modern CLAT PG Passage: The 5 Question Archetypes</h3>
+      <div class="tests-grid" style="margin-bottom:2rem;">
+        ${data.questionArchetypes
+          .map(
+            qa => `
+            <div class="stat-card" style="border-top:3px solid #0f766e;">
+              <div style="font-weight:800; color:#0f172a; font-size:0.96rem; margin-bottom:0.35rem;">
+                ${this.escapeHtml(qa.archetype)}
+              </div>
+              <div style="font-size:0.83rem; color:#1e3a5f; font-style:italic; background:#f8fafc; padding:0.5rem; border-radius:4px; margin-bottom:0.45rem;">
+                ${this.escapeHtml(qa.example)}
+              </div>
+              <div style="font-size:0.83rem; color:#334155;">
+                <strong>Solving Strategy:</strong> ${this.escapeHtml(qa.strategy)}
+              </div>
+            </div>
+          `
+          )
+          .join("")}
+      </div>
+
+      <!-- 4. Pareto 80/20 Micro-Topic Breakdown -->
+      <h3 style="margin-bottom:0.4rem; color:#0f172a;">4. Pareto 80/20 Sub-Topic Micro-Weightage (Where 80% of Questions Come From)</h3>
+      <p style="font-size:0.86rem; color:#475569; margin-bottom:0.85rem;">
+        Within each subject, CLAT PG repeatedly targets a compact set of high-yield clusters. Master these clusters first before reading low-yield chapters.
+      </p>
+      <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:2.25rem;">
+        ${data.microTopicBreakdown
+          .map(
+            sub => `
+            <div class="stat-card">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid #e2e8f0;">
+                <h3 style="font-size:1.05rem; color:#0f172a; margin:0;">${this.escapeHtml(sub.subject)}</h3>
+                <span class="cat-badge cat-sec">${this.escapeHtml(sub.shareOfSubject)}</span>
+              </div>
+              <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:0.75rem;">
+                ${sub.clusters
+                  .map(
+                    cl => `
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:0.75rem;">
+                      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.4rem; margin-bottom:0.3rem;">
+                        <strong style="font-size:0.88rem; color:#1e3a5f;">${this.escapeHtml(cl.cluster)}</strong>
+                      </div>
+                      <div style="font-size:0.74rem; font-weight:700; color:#b45309; margin-bottom:0.35rem;">
+                        🔥 Hit Rate: ${this.escapeHtml(cl.frequency)}
+                      </div>
+                      <div style="font-size:0.82rem; color:#334155; line-height:1.45;">
+                        ${this.escapeHtml(cl.details)}
+                      </div>
+                    </div>
+                  `
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `
+          )
+          .join("")}
+      </div>
+
+      <!-- 5. Most Repeated Questions, Doctrines, Cases & Provisions (2016–2025) -->
+      <div class="section-header" style="align-items:flex-end;">
+        <div>
+          <h3 style="font-size:1.25rem; color:#0f172a;">5. Master Database of Most Repeated Questions, Cases &amp; Doctrines (2016–2025)</h3>
+          <p style="font-size:0.86rem; color:#475569;">
+            Compare how the exact same landmark cases, statutory provisions, and jurisprudence thinkers were asked in 2016–2019 (Direct MCQs) vs. 2020–2025 (Comprehension Passages).
+          </p>
+        </div>
+        <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap;">
+          <span id="tenyr-repeated-count" style="font-size:0.8rem; font-weight:700; color:#475569;"></span>
+          <input
+            type="text"
+            placeholder="🔍 Search case, jurist, section, year..."
+            value="${this.escapeHtml(this.tenYearSearchQuery)}"
+            oninput="App.setTenYearSearch(this.value)"
+            style="padding:0.45rem 0.75rem; border:1px solid #cbd5e1; border-radius:6px; font-size:0.85rem; min-width:240px;"
+          />
+        </div>
+      </div>
+
+      <div class="filter-pills" style="margin-bottom:1rem;">
+        ${categories
+          .map(
+            cat => `
+            <button class="filter-pill tenyr-cat-pill ${this.tenYearCategoryFilter === cat ? "active" : ""}" data-cat="${this.escapeHtml(cat)}" onclick="App.setTenYearCategoryFilter('${this.escapeHtml(cat)}')">
+              ${cat === "ALL" ? "All Subjects (22 Core Recurring Themes)" : this.escapeHtml(cat)}
+            </button>
+          `
+          )
+          .join("")}
+      </div>
+
+      <div id="tenyr-repeated-list" style="display:flex; flex-direction:column; gap:1rem;"></div>
+    `;
+
+    this.renderRepeatedQuestionsList();
   },
 
   // ========================================================================

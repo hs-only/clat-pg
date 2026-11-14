@@ -66,6 +66,7 @@
   const pyq2020_23Real = window.PASSAGES_PYQ_2020_23_REAL || [];   // 6 Passages (36 Qs)
   const advMock1 = window.PASSAGES_ADVANCED_MOCK_1 || [];          // 6 Passages (36 Qs)
   const advMock2 = window.PASSAGES_ADVANCED_MOCK_2 || [];          // 6 Passages (36 Qs)
+  const pyq10YrRepeated = window.PASSAGES_10YR_REPEATED || [];     // 6 Passages (36 Qs)
 
   // 1. Full-Length Mock Test 1 (20 Passages = 120 Qs)
   const fullMock1Passages = [
@@ -186,6 +187,17 @@
       durationMinutes: 66,
       recommendedPhase: "Phase 1: Complete PYQ Mastery",
       passages: [...pyq2022_23, ...pyq2020_23Real]
+    }),
+
+    buildTest({
+      id: "clat-pg-pyq-10yr-repeated",
+      title: "CLAT PG 2016–2025 – 10-Year Most-Repeated Themes & Doctrines PYQ Paper",
+      category: "PYQ Paper",
+      badge: "10-Yr Repeated PYQs • 36 Qs • 6 Passages",
+      description: "Tests the most frequently repeated 10-year questions & doctrines (2016–2025): I.R. Coelho & Basic Structure, Common Cause Passive Euthanasia (2018 & 2023), Sharad Birdhichand Sarda Panchsheel & Dying Declaration, ICJ North Sea/Nicaragua/VCLT, Absolute Liability & NGT Act, and Sec 125 CrPC / Shah Bano / Danial Latifi / Mohd. Abdul Samad (2024).",
+      durationMinutes: 36,
+      recommendedPhase: "Phase 1: 10-Year Repeated Hits",
+      passages: pyq10YrRepeated
     }),
 
     // ==================== SUBJECT & CASE SECTIONAL TESTS ====================

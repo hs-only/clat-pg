@@ -106,7 +106,10 @@
 
     <nav class="nav-tabs">
       <button class="nav-tab-btn active" data-tab="dashboard" onclick="App.switchTab('dashboard')">
-        Mock Tests &amp; PYQs (<span id="nav-tests-count">11</span>)
+        Mock Tests &amp; PYQs (<span id="nav-tests-count">12</span>)
+      </button>
+      <button class="nav-tab-btn" data-tab="ten-year" onclick="App.switchTab('ten-year')">
+        📊 10-Year PYQ Analysis (2016–25)
       </button>
       <button class="nav-tab-btn" data-tab="history" onclick="App.switchTab('history')">
         Completed Tests (<span id="nav-history-count">0</span>)
@@ -146,6 +149,9 @@
           </p>
         </div>
         <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+          <button class="btn btn-outline" style="background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.3);" onclick="App.switchTab('ten-year')">
+            📊 10-Year Weightage &amp; Repeated Qs
+          </button>
           <button class="btn btn-outline" style="background:rgba(255,255,255,0.12); color:#fff; border-color:rgba(255,255,255,0.3);" onclick="App.switchTab('study-plan')">
             📋 View 4-Phase Study Plan
           </button>
@@ -182,18 +188,49 @@
         </div>
       </div>
 
-      <!-- Test Filter & Grid -->
-      <div class="section-header">
-        <h2 style="font-size:1.25rem; color:#0f172a;">Available Mock Tests, PYQs &amp; Sectional Tests</h2>
-        <div class="filter-pills">
-          <button class="filter-pill active" data-filter="ALL" onclick="App.setCategoryFilter('ALL')">All Tests (11)</button>
-          <button class="filter-pill" data-filter="Full-Length Mock" onclick="App.setCategoryFilter('Full-Length Mock')">Full-Length Mocks (4 × 120 Qs)</button>
-          <button class="filter-pill" data-filter="PYQ Paper" onclick="App.setCategoryFilter('PYQ Paper')">CLAT PG PYQs (2020–2025)</button>
-          <button class="filter-pill" data-filter="Sectional Test" onclick="App.setCategoryFilter('Sectional Test')">Subject &amp; Case Sectionals</button>
+      <!-- Test Filter & Search Toolbar -->
+      <div class="tests-toolbar">
+        <div class="tests-toolbar-top">
+          <div>
+            <h2 style="font-size:1.25rem; color:#0f172a; margin:0;">Available Mock Tests, PYQs &amp; Sectional Tests</h2>
+            <p style="font-size:0.83rem; color:#64748b; margin-top:0.15rem;" id="tests-showing-sublabel">
+              Select any test to launch the official split-screen CBT simulator or resume from where you left off.
+            </p>
+          </div>
+          <div class="tests-search-wrap">
+            <input
+              type="text"
+              id="test-search-input"
+              class="test-search-input"
+              placeholder="🔍 Search test by subject, case name, or topic..."
+              oninput="App.setTestSearchQuery(this.value)"
+            />
+          </div>
+        </div>
+
+        <div class="tests-toolbar-filters">
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="ALL" onclick="App.setCategoryFilter('ALL')">All Tests (12)</button>
+            <button class="filter-pill" data-filter="Full-Length Mock" onclick="App.setCategoryFilter('Full-Length Mock')">Full-Length Mocks (4 × 120 Qs)</button>
+            <button class="filter-pill" data-filter="PYQ Paper" onclick="App.setCategoryFilter('PYQ Paper')">CLAT PG PYQs (2016–2025)</button>
+            <button class="filter-pill" data-filter="Sectional Test" onclick="App.setCategoryFilter('Sectional Test')">Subject &amp; Case Sectionals (4)</button>
+          </div>
+
+          <div class="status-filter-pills">
+            <button class="status-pill active" data-status="ALL" onclick="App.setStatusFilter('ALL')">All Status</button>
+            <button class="status-pill" data-status="IN_PROGRESS" onclick="App.setStatusFilter('IN_PROGRESS')">⏸ In Progress</button>
+            <button class="status-pill" data-status="COMPLETED" onclick="App.setStatusFilter('COMPLETED')">✓ Completed</button>
+            <button class="status-pill" data-status="NOT_STARTED" onclick="App.setStatusFilter('NOT_STARTED')">○ Not Started</button>
+          </div>
         </div>
       </div>
 
       <div id="tests-grid" class="tests-grid"></div>
+    </section>
+
+    <!-- 1B. 10-YEAR PYQ ASSESSMENT & REPEATED QUESTIONS VIEW (2016–2025) -->
+    <section id="view-ten-year" class="hidden">
+      <div id="ten-year-container"></div>
     </section>
 
     <!-- 2. COMPLETED TESTS HISTORY VIEW -->
@@ -561,6 +598,7 @@
 
   <!-- Scripts -->
   <script src="js/data/studyPlan.js"></script>
+  <script src="js/data/tenYearAnalysis.js"></script>
   <script src="js/data/passages_const_recent.js"></script>
   <script src="js/data/passages_pyq_2024.js"></script>
   <script src="js/data/passages_pyq_2022_23.js"></script>
@@ -568,6 +606,7 @@
   <script src="js/data/passages_core_laws.js"></script>
   <script src="js/data/passages_pyq_2025_real.js"></script>
   <script src="js/data/passages_pyq_2020_23_real.js"></script>
+  <script src="js/data/passages_10yr_repeated.js"></script>
   <script src="js/data/passages_advanced_mock.js"></script>
   <script src="js/data/passages_advanced_mock_2.js"></script>
   <script src="js/data/testsCatalog.js"></script>
