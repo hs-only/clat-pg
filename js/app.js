@@ -15,9 +15,9 @@ const STORAGE_KEYS = {
 
 // Default Assigned Login Credentials (Can be changed here before hosting or in Settings tab)
 const DEFAULT_AUTH = {
-  username: "clatpg2027",
-  password: "Nlu@2027",
-  candidateName: "CLAT PG Aspirant"
+  username: "shivani04",
+  password: "hritik@0409",
+  candidateName: "Akanksha Priya"
 };
 
 // Official TCS iON 5 Question States
